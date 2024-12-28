@@ -1,10 +1,14 @@
-<div style="text-align: left;">
-  <strong><span style="font-size: 24px;">Wallpaper Generator</span></strong>
-</div>
-
-<div style="text-align: left;">
-  <span style="font-size: 12px;">&#8201For Android</span>
-</div>
+<table>
+  <tr>
+    <td>
+      <img src="app/src/main/ic_launcher-playstore.png" alt="GitHub" width="140" height=140">
+    </td>
+    <td>
+      <h3 style="margin: 0;">Wallpaper Generator</h3>
+      <p style="margin: 0;">&#8202;For Android</p>
+    </td>
+  </tr>
+</table>
 
 
 ## 功能亮点
