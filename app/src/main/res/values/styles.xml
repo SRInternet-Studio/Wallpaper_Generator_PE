@@ -1,0 +1,10 @@
+<resources>
+    <style name="RoundedCorner">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MaterialComponents.Rounded</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.MaterialComponents.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+</resources>

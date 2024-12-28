@@ -1,0 +1,58 @@
+<resources>
+    <!-- Primary colors -->
+    <color name="light_purple_light_mode">#BB86FC</color>
+    <color name="light_purple_dark_mode">#3700B3</color>
+    <color name="light_purple_container_light_mode">#E3DAFF</color>
+    <color name="light_purple_container_dark_mode">#6200EE</color>
+    <color name="light_purple_text_light_mode">#000000</color>
+    <color name="light_purple_text_dark_mode">#FFFFFF</color>
+
+    <!-- Secondary colors -->
+    <color name="light_green_light_mode">#03DAC6</color>
+    <color name="light_green_dark_mode">#018786</color>
+    <color name="light_green_container_light_mode">#A7FFEB</color>
+    <color name="light_green_container_dark_mode">#03DAC6</color>
+
+    <!-- Overlay color -->
+    <color name="overlay_color">#80FFFFFF</color> <!-- 50% transparent white -->
+
+    <!-- Tertiary colors -->
+    <color name="light_orange_light_mode">#FFB74D</color>
+    <color name="light_orange_dark_mode">#FF8F00</color>
+    <color name="light_orange_container_light_mode">#FFE0B2</color>
+    <color name="light_orange_container_dark_mode">#FFB74D</color>
+
+    <!-- Background colors -->
+    <color name="background_light_mode">#FFFFFF</color>
+    <color name="background_dark_mode">#121212</color>
+    <color name="background_text_light_mode">#000000</color>
+    <color name="background_text_dark_mode">#FFFFFF</color>
+
+    <!-- Surface colors -->
+    <color name="surface_light_mode">#FFFFFF</color>
+    <color name="surface_dark_mode">#121212</color>
+    <color name="surface_text_light_mode">#000000</color>
+    <color name="surface_text_dark_mode">#FFFFFF</color>
+
+    <!-- Error colors -->
+    <color name="error_light_mode">#CF6679</color>
+    <color name="error_dark_mode">#B00020</color>
+    <color name="error_text_light_mode">#000000</color>
+    <color name="error_text_dark_mode">#FFFFFF</color>
+
+    <!-- Accent colors -->
+    <color name="light_red1_light_mode">#FFCDD2</color>
+    <color name="light_red1_dark_mode">#B71C1C</color>
+    <color name="light_red2_light_mode">#F8BBD0</color>
+    <color name="light_red2_dark_mode">#880E4F</color>
+    <color name="light_purple1_light_mode">#E1BEE7</color>
+    <color name="light_purple1_dark_mode">#4A148C</color>
+    <color name="light_purple2_light_mode">#D1C4E9</color>
+    <color name="light_purple2_dark_mode">#311B92</color>
+    <color name="light_blue_light_mode">#C5CAE9</color>
+    <color name="light_blue_dark_mode">#1A237E</color>
+
+    <!-- Text colors -->
+    <color name="text_colors">#000000</color>
+    <color name="welcome_text_colors">#B7000000</color>
+</resources>

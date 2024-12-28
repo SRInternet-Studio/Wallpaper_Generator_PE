@@ -1,0 +1,130 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent">
+
+    <TextView
+            android:id="@+id/WelcomeText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24sp"
+            android:layout_marginStart="20sp"
+            android:text="@string/welcome_text"
+            android:textColor="@color/welcome_text_colors"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.066"/>
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16sp"
+            app:cardCornerRadius="8sp"
+            app:cardElevation="4sp"
+            android:background="@android:color/white"
+            android:alpha="0.8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/WelcomeText"
+            android:id="@+id/todayImageCardView"
+            app:layout_constraintWidth_percent="0.9">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16sp">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="今日推荐"
+                    android:textSize="18sp"
+                    android:textColor="@color/text_colors"/>
+
+            <TextView
+                    android:id="@+id/todayImageInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="图片信息"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_colors"
+                    android:layout_marginBottom="1sp"/>
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="0sp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="8sp"
+                    android:layout_marginTop="8sp">
+
+                <ImageView
+                        android:id="@+id/todayImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/android_example_image"
+                        android:background="@drawable/rounded_corner"/>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="152dp"
+            android:layout_margin="16sp"
+            app:cardCornerRadius="8sp"
+            app:cardElevation="4sp"
+            android:background="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:alpha="0.8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/latencyContentCardView"
+            app:layout_constraintTop_toBottomOf="@+id/todayImageCardView"
+            android:id="@+id/apiContentCardView"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8sp"
+            app:layout_constraintVertical_bias="0.047"
+            app:layout_constraintWidth_percent="0.4"
+            app:layout_constraintHeight_percent="0.41">
+
+        <ImageView
+                android:layout_width="79sp"
+                android:layout_height="79sp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/card_api"
+                android:background="@drawable/rounded_corner"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="152dp"
+            android:layout_margin="16sp"
+            app:cardCornerRadius="8sp"
+            app:cardElevation="4sp"
+            android:background="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:alpha="0.8"
+            app:layout_constraintStart_toEndOf="@+id/apiContentCardView"
+            app:layout_constraintTop_toBottomOf="@+id/todayImageCardView"
+            android:id="@+id/latencyContentCardView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8sp"
+            app:layout_constraintVertical_bias="0.046"
+            app:layout_constraintWidth_percent="0.4"
+            app:layout_constraintHeight_percent="0.41">
+
+        <ImageView
+                android:layout_width="79sp"
+                android:layout_height="79sp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/card_latency"
+                android:background="@drawable/rounded_corner"/>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

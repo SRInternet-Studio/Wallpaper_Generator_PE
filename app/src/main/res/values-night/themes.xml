@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Wallpapergenerator" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/light_purple_light_mode</item>
+        <item name="colorOnPrimary">@color/light_purple_text_light_mode</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/light_green_light_mode</item>
+        <item name="colorOnSecondary">@color/text_colors</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>

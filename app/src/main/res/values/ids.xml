@@ -1,0 +1,6 @@
+<resources>
+    <item name="nav_home" type="id"/>
+    <item name="nav_generate" type="id"/>
+    <item name="nav_waterfall" type="id"/>
+    <item name="nav_settings" type="id"/>
+</resources>

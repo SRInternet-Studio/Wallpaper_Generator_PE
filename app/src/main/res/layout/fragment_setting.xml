@@ -1,0 +1,88 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/settings_button_1"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_margin="8dp"
+            android:text="Button 1"
+            app:backgroundTint="@color/light_purple_container_light_mode"
+            android:textColor="@color/text_colors"
+            app:cornerRadius="8dp"
+            app:iconGravity="textStart"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="bottom|start"
+            android:paddingStart="16dp"
+            android:paddingBottom="8dp"
+    />
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/settings_button_2"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_margin="8dp"
+            android:text="Button 2"
+            app:backgroundTint="@color/light_purple_container_light_mode"
+            android:textColor="@color/text_colors"
+            app:cornerRadius="8dp"
+            app:iconGravity="textStart"
+            app:layout_constraintTop_toBottomOf="@id/settings_button_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="bottom|start"
+            android:paddingStart="16dp"
+            android:paddingBottom="8dp"
+    />
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/settings_button_3"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_margin="8dp"
+            android:text="Button 3"
+            app:backgroundTint="@color/light_purple_container_light_mode"
+            android:textColor="@color/text_colors"
+            app:cornerRadius="8dp"
+            app:iconGravity="textStart"
+            app:layout_constraintTop_toBottomOf="@id/settings_button_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="bottom|start"
+            android:paddingStart="16dp"
+            android:paddingBottom="8dp"
+    />
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/settings_button_4"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_margin="8dp"
+            android:text="Button 4"
+            app:backgroundTint="@color/light_purple_container_light_mode"
+            android:textColor="@color/text_colors"
+            app:cornerRadius="8dp"
+            app:iconGravity="textStart"
+            app:layout_constraintTop_toBottomOf="@id/settings_button_3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="bottom|start"
+            android:paddingStart="16dp"
+            android:paddingBottom="8dp"
+    />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
