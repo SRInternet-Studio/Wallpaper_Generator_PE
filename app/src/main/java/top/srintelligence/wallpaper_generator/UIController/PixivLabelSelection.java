@@ -6,6 +6,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,16 +14,17 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import top.srintelligence.wallpaper_generator.R;
+import java.util.Objects;
 
 public class PixivLabelSelection extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.pixiv_label_selection, container, false);
-
-        TextInputEditText editTextLabel = view.findViewById(R.id.editTextLabel);
-        ChipGroup chipGroupLabels = view.findViewById(R.id.chipGroupLabels);
+        View view = inflater.inflate(R.layout.pixiv_label_selection, container, false); // 加载布局
+        TextInputEditText editTextLabel = view.findViewById(R.id.editTextLabel); // 获取输入框
+        ChipGroup chipGroupLabels = view.findViewById(R.id.chipGroupLabels); // 获取 ChipGroup
+        Button returnButton = view.findViewById(R.id.pixiv_Label_Return_Button); // 获取返回按钮
 
         editTextLabel.addTextChangedListener(new TextWatcher() {
             @Override
@@ -30,19 +32,33 @@ public class PixivLabelSelection extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s != null && s.toString().contains(" ")) {
-                    String[] tags = s.toString().split(" ");
-                    for (String tag : tags) {
+                if (s != null && (s.toString().contains(" ") || s.toString().contains("\n"))) { // 检测是否输入了空格或换行符
+                    String[] tags = s.toString().split("[\\s&]+"); // 以空格或换行符分割
+                    for (String tag : tags) { // 遍历所有标签
                         if (!tag.isEmpty()) {
-                            addChipToGroup(tag, chipGroupLabels);
+                            addChipToGroup(tag, chipGroupLabels); // 添加到 ChipGroup
                         }
                     }
-                    editTextLabel.getText().clear();
+                    Objects.requireNonNull(editTextLabel.getText()).clear(); // 清空输入框
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
+        });
+
+        returnButton.setOnClickListener(v -> {
+            String[] tags = new String[chipGroupLabels.getChildCount()];
+            for (int i = 0; i < chipGroupLabels.getChildCount(); i++) { // 获取所有标签
+                Chip chip = (Chip) chipGroupLabels.getChildAt(i);
+                tags[i] = chip.getText().toString(); // 添加到数组
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("tags", tags);
+
+            getParentFragmentManager().setFragmentResult("requestKey", bundle); // 传递数据
+            getParentFragmentManager().popBackStack(); // 返回上一个 Fragment
         });
 
         return view;

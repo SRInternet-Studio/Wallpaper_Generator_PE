@@ -37,6 +37,11 @@ public class PixivGenerateFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        getParentFragmentManager().setFragmentResultListener("requestKey", this, (requestKey, result) -> {
+            String value = result.getString("key");
+            // 处理接收到的变量
+        });
         Button addButton = Objects.requireNonNull(getView()).findViewById(R.id.add_tag_button);
         addButton.setOnClickListener(this::onAddTagButtonClick);
     }
