@@ -14,6 +14,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import top.srintelligence.wallpaper_generator.R;
+
 import java.util.Objects;
 
 public class PixivLabelSelection extends Fragment {
@@ -57,7 +58,7 @@ public class PixivLabelSelection extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putStringArray("tags", tags);
 
-            getParentFragmentManager().setFragmentResult("requestKey", bundle); // 传递数据
+            getParentFragmentManager().setFragmentResult("pixiv_label_result", bundle); // 传递数据
             getParentFragmentManager().popBackStack(); // 返回上一个 Fragment
         });
 

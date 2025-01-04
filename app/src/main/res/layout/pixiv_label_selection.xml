@@ -66,16 +66,18 @@
 
     <Button
             android:id="@+id/pixiv_Label_Return_Button"
-            android:layout_width="379dp"
-            android:layout_height="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="完成！"
             android:textColor="@color/text_colors"
             android:layout_gravity="end"
             android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_margin="16dp"
+            android:padding="8dp"
             style="@style/RoundedCorner"
             app:backgroundTint="@color/overlay_color"
             app:layout_constraintTop_toBottomOf="@+id/scrollViewLabels"
-            android:layout_marginTop="44dp"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.0"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

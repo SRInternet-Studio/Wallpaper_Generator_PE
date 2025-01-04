@@ -15,33 +15,37 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import top.srintelligence.wallpaper_generator.R;
+import top.srintelligence.wallpaper_generator.lookup_kernel.exception.ExceptionHandler;
 
 import java.util.Objects;
 
 public class PixivGenerateFragment extends Fragment {
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.generate_from_pixiv, container, false);
-        TextView textView = view.findViewById(R.id.generate_from_pixiv_page_title);
+        TextView page_titleView = view.findViewById(R.id.generate_from_pixiv_page_title);
+        TextView tag_View = view.findViewById(R.id.pixiv_Tag_Text_View);
+
         // 创建加粗的Pixiv文字
         SpannableString spannableString = new SpannableString("Pixiv\n图片筛选");
         spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // 设置文本
-        textView.setText(spannableString);
-        textView.setTextSize(20); // 增大文字大小
+        page_titleView.setText(spannableString);
+        page_titleView.setTextSize(20); // 增大文字大小
+
+        getParentFragmentManager().setFragmentResultListener("pixiv_label_result", this, (requestKey, result) -> {
+            String tagsString = String.join(", ", Objects.requireNonNull(result.getStringArray("tags")));
+            tag_View.setText(tagsString);
+        });
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        getParentFragmentManager().setFragmentResultListener("requestKey", this, (requestKey, result) -> {
-            String value = result.getString("key");
-            // 处理接收到的变量
-        });
         Button addButton = Objects.requireNonNull(getView()).findViewById(R.id.add_tag_button);
         addButton.setOnClickListener(this::onAddTagButtonClick);
     }
