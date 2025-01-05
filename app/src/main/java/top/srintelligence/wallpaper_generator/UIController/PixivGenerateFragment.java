@@ -8,18 +8,19 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import top.srintelligence.wallpaper_generator.R;
-import top.srintelligence.wallpaper_generator.lookup_kernel.exception.ExceptionHandler;
 
 import java.util.Objects;
 
 public class PixivGenerateFragment extends Fragment {
+    String[] tags;
+    Boolean excludeAI = false;
+
 
     @Nullable
     @Override
@@ -28,18 +29,24 @@ public class PixivGenerateFragment extends Fragment {
         TextView page_titleView = view.findViewById(R.id.generate_from_pixiv_page_title);
         TextView tag_View = view.findViewById(R.id.pixiv_Tag_Text_View);
 
-        // 创建加粗的Pixiv文字
+        // 加粗
         SpannableString spannableString = new SpannableString("Pixiv\n图片筛选");
         spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // 设置文本
         page_titleView.setText(spannableString);
-        page_titleView.setTextSize(20); // 增大文字大小
+        page_titleView.setTextSize(20); // 文字大小
 
         getParentFragmentManager().setFragmentResultListener("pixiv_label_result", this, (requestKey, result) -> {
             String tagsString = String.join(", ", Objects.requireNonNull(result.getStringArray("tags")));
+            tags = result.getStringArray("tags");
             tag_View.setText(tagsString);
         });
+
+        NumberPicker numberPicker = view.findViewById(R.id.pixiv_input_number_picker);
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(100);
+        numberPicker.setWrapSelectorWheel(true);
         return view;
     }
 
@@ -47,6 +54,8 @@ public class PixivGenerateFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Button addButton = Objects.requireNonNull(getView()).findViewById(R.id.add_tag_button);
+        CheckBox excludeAIBox = getView().findViewById(R.id.exclude_ai_checkbox);
+        excludeAIBox.setOnCheckedChangeListener((buttonView, isChecked) -> excludeAI = isChecked);
         addButton.setOnClickListener(this::onAddTagButtonClick);
     }
 
