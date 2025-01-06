@@ -1,7 +1,14 @@
 package top.srintelligence.wallpaper_generator.lookup_kernel.exception;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import top.srintelligence.wallpaper_generator.MainActivity;
 
+import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ExceptionHandler {
@@ -14,11 +21,25 @@ public class ExceptionHandler {
             EXCEPTIONS.poll();
         }
         EXCEPTIONS.offer(e);
-        Log.e(TAG, logCaller(), e);
+        Log.e(TAG, logCaller() + " Exception: " + e.getClass().getName(), e);
+        showAlert("An error was encountered while processing the request", e.getMessage() + "\n" + Log.getStackTraceString(e));
     }
 
     public static void handleException(String message, Throwable e) {
-        Log.e(TAG, message, e);
+        Log.e(TAG, message + " Exception: " + e.getClass().getName(), e);
+        logCaller();
+        showAlert("An error was encountered while processing the request", e.getMessage() + "\n" + Log.getStackTraceString(e));
+    }
+
+    public static void showAlert(String title, String message) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Context context = MainActivity.getInstance();
+            new MaterialAlertDialogBuilder(context)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                    .show();
+        });
     }
 
     public static void handleWarning(String message) {

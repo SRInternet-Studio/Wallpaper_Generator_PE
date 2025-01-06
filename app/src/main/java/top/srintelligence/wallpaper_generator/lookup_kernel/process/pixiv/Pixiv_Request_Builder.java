@@ -30,9 +30,9 @@ public class Pixiv_Request_Builder {
 
         Map<String, String> params = new HashMap<>();
         List<AbstractMap.SimpleEntry<String, String>> entries = Arrays.asList(
-                new AbstractMap.SimpleEntry<>("tag", tag != null && tag.length > 0 ? String.join(",", tag) : null),
+                new AbstractMap.SimpleEntry<>("tag", tag != null && tag.length > 0 ? String.join("&tag=", tag) : null),
                 new AbstractMap.SimpleEntry<>("keyword", keyword != null && !keyword.isEmpty() ? keyword : null),
-                new AbstractMap.SimpleEntry<>("limit", limit > 0 ? String.valueOf(limit) : null),
+                new AbstractMap.SimpleEntry<>("num", limit > 0 ? String.valueOf(limit) : null),
                 new AbstractMap.SimpleEntry<>("r18", r18 >= 0 ? String.valueOf(r18) : null),
                 new AbstractMap.SimpleEntry<>("width", width > 0 ? String.valueOf(width) : null),
                 new AbstractMap.SimpleEntry<>("height", height > 0 ? String.valueOf(height) : null),
@@ -73,11 +73,12 @@ public class Pixiv_Request_Builder {
         return this;
     }
 
+    @Deprecated
     public Pixiv_Request_Builder setR18(int r18) {
-        if (r18 < 0 && r18 > 2) {
+        if (r18 > 0 && r18 <= 2)  {
             throw new IllegalArgumentException("R18 Parameter must be 0, 1 or 2!");
         }
-        this.r18 = r18;
+        this.r18 = 0;
         return this;
     }
 
@@ -91,8 +92,8 @@ public class Pixiv_Request_Builder {
         return this;
     }
 
-    public Pixiv_Request_Builder excludeAI() {
-        this.excludeAI = true;
+    public Pixiv_Request_Builder excludeAI(Boolean excludeAI) {
+        this.excludeAI = excludeAI;
         return this;
     }
 

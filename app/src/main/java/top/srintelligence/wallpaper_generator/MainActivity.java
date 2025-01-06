@@ -1,9 +1,12 @@
 package top.srintelligence.wallpaper_generator;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -11,6 +14,7 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
 import android.widget.ImageView;
 import android.view.View;
+import android.widget.Switch;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -21,30 +25,43 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.color.DynamicColors;
-import top.srintelligence.wallpaper_generator.UIController.GenerateFragment;
-import top.srintelligence.wallpaper_generator.UIController.WaterfallFragment;
-import top.srintelligence.wallpaper_generator.UIController.HomeFragment;
-import top.srintelligence.wallpaper_generator.UIController.SetFragment;
+import top.srintelligence.wallpaper_generator.UIController.*;
 import org.jetbrains.annotations.NotNull;
+import top.srintelligence.wallpaper_generator.lookup_kernel.exception.ExceptionHandler;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final int NAV_HOME = R.id.nav_home;
     public static final int NAV_GENERATE = R.id.nav_generate;
     public static final int NAV_WATHERFALL = R.id.nav_waterfall;
     public static final int NAV_SETTINGS = R.id.nav_settings;
+    private static MainActivity instance;
+    private boolean isChecked = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // 启用动态颜色支持
         DynamicColors.applyToActivitiesIfAvailable(getApplication());
-
         setContentView(R.layout.activity_main);
 
         ImageView backgroundImage = findViewById(R.id.background_image);
         View overlay = findViewById(R.id.overlay_view);
         String imageUrl = "https://cn.bing.com/th?id=OHR.MouseholeXmas_ZH-CN3079184443_1080x1920.jpg";
+
+        // 初始化悬浮窗开关
+        if (isChecked) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                startActivityForResult(intent, 0);
+            } else {
+                Log.d("MainActivity", "Starting FloatingViewService");
+                startFloatingViewService();
+            }
+        } else {
+            Log.d("MainActivity", "Stopping FloatingViewService");
+            stopFloatingViewService();
+        }
 
         Glide.with(this)
                 .load(imageUrl)
@@ -105,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             bottomNavigationView.setSelectedItemId(NAV_HOME);
         }
+
+        instance = this; // 保存当前实例
     }
 
     private Bitmap blur(Bitmap image) {
@@ -126,6 +145,10 @@ public class MainActivity extends AppCompatActivity {
         return outputBitmap;
     }
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -136,4 +159,23 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    private void startFloatingViewService() {
+        startService(new Intent(this, FloatingViewService.class));
+    }
+
+    private void stopFloatingViewService() {
+        stopService(new Intent(this, FloatingViewService.class));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if (Settings.canDrawOverlays(this)) {
+                startFloatingViewService();
+            } else {
+                isChecked = false;
+            }
+        }
+    }
 }

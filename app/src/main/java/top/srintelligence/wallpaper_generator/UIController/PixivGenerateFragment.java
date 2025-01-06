@@ -1,6 +1,7 @@
 package top.srintelligence.wallpaper_generator.UIController;
 
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -14,13 +15,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import top.srintelligence.wallpaper_generator.R;
+import top.srintelligence.wallpaper_generator.lookup_kernel.process.pixiv.Pixiv_Request_Builder;
 
 import java.util.Objects;
 
 public class PixivGenerateFragment extends Fragment {
     String[] tags;
     Boolean excludeAI = false;
-
+    int limit = 0;
 
     @Nullable
     @Override
@@ -45,8 +47,9 @@ public class PixivGenerateFragment extends Fragment {
 
         NumberPicker numberPicker = view.findViewById(R.id.pixiv_input_number_picker);
         numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(100);
+        numberPicker.setMaxValue(10);
         numberPicker.setWrapSelectorWheel(true);
+        numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> limit = newVal);
         return view;
     }
 
@@ -54,9 +57,29 @@ public class PixivGenerateFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Button addButton = Objects.requireNonNull(getView()).findViewById(R.id.add_tag_button);
+        Button generateButton = getView().findViewById(R.id.pixiv_generate_button);
         CheckBox excludeAIBox = getView().findViewById(R.id.exclude_ai_checkbox);
         excludeAIBox.setOnCheckedChangeListener((buttonView, isChecked) -> excludeAI = isChecked);
+        generateButton.setOnClickListener(v -> new GeneratePixivTask().execute());
         addButton.setOnClickListener(this::onAddTagButtonClick);
+    }
+
+    private class GeneratePixivTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Pixiv_Request_Builder builder = new Pixiv_Request_Builder();
+            builder
+                    .setTags(tags)
+                    .setLimit(limit)
+                    .excludeAI(excludeAI)
+                    .build();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            // 更新UI
+        }
     }
 
     public void onAddTagButtonClick(View v) {
