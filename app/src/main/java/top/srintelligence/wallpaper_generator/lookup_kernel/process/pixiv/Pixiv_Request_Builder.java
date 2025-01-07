@@ -1,5 +1,12 @@
 package top.srintelligence.wallpaper_generator.lookup_kernel.process.pixiv;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import top.srintelligence.wallpaper_generator.MainActivity;
+import top.srintelligence.wallpaper_generator.R;
 import top.srintelligence.wallpaper_generator.lookup_kernel.exception.ExceptionHandler;
 import top.srintelligence.wallpaper_generator.lookup_kernel.json_configuration.JSON_Data_Processor;
 import top.srintelligence.wallpaper_generator.lookup_kernel.process.net.util.URLUtil;
@@ -48,7 +55,7 @@ public class Pixiv_Request_Builder {
         }
 
         String apiURL = URLUtil.buildURLWithParams(api.getUrl(), params);
-        ExceptionHandler.handleDebug("URL："+apiURL);
+        ExceptionHandler.handleDebug("Pixiv_Request_URL：\n"+apiURL);
 
         Map<String, Object> jsonData = JSON_Data_Processor.getUrl(apiURL);
         for (Map.Entry<String, Object> entry : jsonData.entrySet()) {

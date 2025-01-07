@@ -123,6 +123,23 @@ public class JsonData {
                 return original;
             }
         }
+
+        @Override
+        public String toString() {
+            return "JsonData.Data{" +
+                    "originalUrl='" + getOriginalUrl() + '\'' +
+                    ", url='" + url + '\'' +
+                    ", pid=" + pid +
+                    ", page=" + page +
+                    ", author='" + author + '\'' +
+                    ", title='" + title + '\'' +
+                    ", r18=" + r18 +
+                    ", uploadDate=" + uploadDate +
+                    ", tags=" + tags +
+                    ", ext='" + ext + '\'' +
+                    ", res='" + getRes() + '\'' +
+                    '}';
+        }
     }
 
     /**

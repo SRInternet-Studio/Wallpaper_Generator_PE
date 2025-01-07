@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int NAV_WATHERFALL = R.id.nav_waterfall;
     public static final int NAV_SETTINGS = R.id.nav_settings;
     private static MainActivity instance;
-    private boolean isChecked = true;
+    private boolean isChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
