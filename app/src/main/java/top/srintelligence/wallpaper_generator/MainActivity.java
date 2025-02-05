@@ -1,6 +1,5 @@
 package top.srintelligence.wallpaper_generator;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,7 +13,6 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
 import android.widget.ImageView;
 import android.view.View;
-import android.widget.Switch;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -25,9 +23,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.color.DynamicColors;
-import top.srintelligence.wallpaper_generator.UIController.*;
+import top.fireworkrocket.lookup_kernel.config.DatabaseUtil;
+import top.srintelligence.wallpaper_generator.uicontroller.*;
 import org.jetbrains.annotations.NotNull;
-import top.srintelligence.wallpaper_generator.lookup_kernel.exception.ExceptionHandler;
+
+import static top.fireworkrocket.lookup_kernel.config.DefaultConfig.backGroundfile;
+import static top.fireworkrocket.lookup_kernel.config.DefaultConfig.debug;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
     public static final int NAV_WATHERFALL = R.id.nav_waterfall;
     public static final int NAV_SETTINGS = R.id.nav_settings;
     private static MainActivity instance;
-    private boolean isChecked = false;
+    private static DatabaseUtil databaseUtil;
+    private boolean isChecked = debug;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView backgroundImage = findViewById(R.id.background_image);
         View overlay = findViewById(R.id.overlay_view);
-        String imageUrl = "https://cn.bing.com/th?id=OHR.MouseholeXmas_ZH-CN3079184443_1080x1920.jpg";
+        String imageUrl = String.valueOf(backGroundfile);
 
         // 初始化悬浮窗开关
         if (isChecked) {
@@ -108,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new WaterfallFragment();
             } else if (itemId == NAV_GENERATE && !(currentFragment instanceof GenerateFragment)) {
                 selectedFragment = new GenerateFragment();
-            } else if (itemId == NAV_SETTINGS && !(currentFragment instanceof SetFragment)) {
-                selectedFragment = new SetFragment();
+            } else if (itemId == NAV_SETTINGS && !(currentFragment instanceof SettingFragment)) {
+                selectedFragment = new SettingFragment();
             }
 
             if (selectedFragment != null) {
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         instance = this; // 保存当前实例
+        databaseUtil = new DatabaseUtil(this); // 初始化数据库
     }
 
     private Bitmap blur(Bitmap image) {
@@ -177,5 +180,9 @@ public class MainActivity extends AppCompatActivity {
                 isChecked = false;
             }
         }
+    }
+
+    public static DatabaseUtil getDatabaseUtil() {
+        return databaseUtil;
     }
 }

@@ -23,7 +23,12 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".UIController.FloatingViewService"
+        <activity
+                android:name=".Image_Showcase_Activity"
+                android:exported="false">
+        </activity>
+
+        <service android:name=".uicontroller.FloatingViewService"
                  android:permission="android.permission.SYSTEM_ALERT_WINDOW"
                  android:exported="false"/>
 
