@@ -24,12 +24,15 @@ import top.srintelligence.wallpaper_generator.MainActivity;
 import top.srintelligence.wallpaper_generator.R;
 import top.fireworkrocket.lookup_kernel.process.pixiv.Pixiv_Request_Builder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class PixivGenerateFragment extends Fragment {
     String[] tags;
     Boolean excludeAI = false;
     int limit = 0;
+    List<String> pixivURLs = new ArrayList<>();
 
     @Nullable
     @Override
@@ -52,7 +55,7 @@ public class PixivGenerateFragment extends Fragment {
             tag_View.setText(tagsString);
         });
 
-        NumberPicker numberPicker = view.findViewById(R.id.pixiv_input_number_picker);
+        NumberPicker numberPicker = view.findViewById(R.id.pixiv_input_number_picker); // 数量选择器
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(10);
         numberPicker.setWrapSelectorWheel(true);
@@ -61,49 +64,54 @@ public class PixivGenerateFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) { // 设置点击事件
         super.onActivityCreated(savedInstanceState);
-        Button addButton = Objects.requireNonNull(getView()).findViewById(R.id.add_tag_button);
-        Button generateButton = getView().findViewById(R.id.pixiv_generate_button);
-        CheckBox excludeAIBox = getView().findViewById(R.id.exclude_ai_checkbox);
-        excludeAIBox.setOnCheckedChangeListener((buttonView, isChecked) -> excludeAI = isChecked);
-        generateButton.setOnClickListener(v -> new GeneratePixivTask().execute());
-        addButton.setOnClickListener(this::onAddTagButtonClick);
+
+        Button addButton = Objects.requireNonNull(getView()).findViewById(R.id.add_tag_button); // 添加标签按钮
+        Button generateButton = getView().findViewById(R.id.pixiv_generate_button); // 生成按钮
+
+        CheckBox excludeAIBox = getView().findViewById(R.id.exclude_ai_checkbox); // 排除AI
+        excludeAIBox.setOnCheckedChangeListener((buttonView, isChecked) -> excludeAI = isChecked); // 排除AI
+
+        generateButton.setOnClickListener(v -> new GeneratePixivTask().execute()); // 生成按钮
+        addButton.setOnClickListener(this::onAddTagButtonClick); // 添加标签
     }
 
-    private class GeneratePixivTask extends AsyncTask<Void, Void, Void> {
+    private class GeneratePixivTask extends AsyncTask<Void, Void, Void> { // 异步任务
         private AlertDialog progressDialog;
 
         @Override
-        protected void onPreExecute() { // 显示加载框
+        protected void onPreExecute() { // 加载框
             super.onPreExecute();
             Context context = MainActivity.getInstance();
-            progressDialog = new MaterialAlertDialogBuilder(context)
+            progressDialog = new MaterialAlertDialogBuilder(context) // 加载框
                     .setView(R.layout.progress_dialog)
                     .setCancelable(false)
                     .create();
-            progressDialog.show();
+            progressDialog.show(); // 显示加载框
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(Void... voids) { // 后台任务
             Pixiv_Request_Builder builder = new Pixiv_Request_Builder();
-            builder
+            pixivURLs = builder
                     .setTags(tags)
                     .setLimit(limit)
                     .excludeAI(excludeAI)
                     .build();
+
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Void aVoid) { // 后台任务完成
             super.onPostExecute(aVoid);
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
             new Handler().post(() -> {
-                Intent intent = new Intent(MainActivity.getInstance(), Image_Showcase_Activity.class);
+                Intent intent = new Intent(MainActivity.getInstance(), Image_Showcase_Activity.class); // 跳转到Image_Showcase_Activity
+                intent.putStringArrayListExtra("imageURLs", (ArrayList<String>) pixivURLs); // 将图片URL传递给Image_Showcase_Activity
                 startActivity(intent);
             });
         }

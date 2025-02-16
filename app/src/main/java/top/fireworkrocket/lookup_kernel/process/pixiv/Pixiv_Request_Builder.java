@@ -69,13 +69,15 @@ public class Pixiv_Request_Builder {
 
         // 抽取图片URL
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) jsonData.get("data");
+        List<String> returnUrls = new ArrayList<>();
         for (Map<String, Object> data : dataList) {
             Map<String, String> urls = (Map<String, String>) data.get("urls");
             String originalUrl = urls.get("original");
+            returnUrls.add(originalUrl);
             ExceptionHandler.handleDebug("Original URL: " + originalUrl);
         }
 
-        return null;
+        return returnUrls;
     }
 
     public Pixiv_Request_Builder setTags(String[] tags) {
