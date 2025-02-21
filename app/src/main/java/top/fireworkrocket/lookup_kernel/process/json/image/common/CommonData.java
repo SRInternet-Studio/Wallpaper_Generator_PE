@@ -35,7 +35,7 @@ public class CommonData {
         }
     }
 
-    private String getJsonStatus() {
+    public String getJsonStatus() {
         if (status != null && !status.isEmpty()) {
             return status;
         } else if (code != null && !code.isEmpty()) {
@@ -49,7 +49,7 @@ public class CommonData {
         }
     }
 
-    private String getJsonUrl() {
+    public String getJsonUrl() {
         if (url != null && !url.isEmpty()) {
             return url;
         } else if (pics != null && !pics.isEmpty()) {

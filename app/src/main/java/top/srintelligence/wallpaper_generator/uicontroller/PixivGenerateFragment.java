@@ -19,11 +19,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import top.srintelligence.wallpaper_generator.Image_Showcase_Activity;
+import top.fireworkrocket.lookup_kernel.exception.ExceptionHandler;
+import top.srintelligence.wallpaper_generator.ImageShowcaseActivity;
 import top.srintelligence.wallpaper_generator.MainActivity;
 import top.srintelligence.wallpaper_generator.R;
-import top.fireworkrocket.lookup_kernel.process.pixiv.Pixiv_Request_Builder;
+import top.srintelligence.wallpaper_generator.function.pixiv.Pixiv_Request_Builder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -57,7 +59,7 @@ public class PixivGenerateFragment extends Fragment {
 
         NumberPicker numberPicker = view.findViewById(R.id.pixiv_input_number_picker); // 数量选择器
         numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(10);
+        numberPicker.setMaxValue(30);
         numberPicker.setWrapSelectorWheel(true);
         numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> limit = newVal);
         return view;
@@ -94,12 +96,15 @@ public class PixivGenerateFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) { // 后台任务
             Pixiv_Request_Builder builder = new Pixiv_Request_Builder();
-            pixivURLs = builder
-                    .setTags(tags)
-                    .setLimit(limit)
-                    .excludeAI(excludeAI)
-                    .build();
-
+            try {
+                pixivURLs = builder
+                        .setTags(tags)
+                        .setLimit(limit)
+                        .excludeAI(excludeAI)
+                        .build();
+            } catch (IOException e) {
+                ExceptionHandler.handleException(e);
+            }
             return null;
         }
 
@@ -109,11 +114,17 @@ public class PixivGenerateFragment extends Fragment {
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
-            new Handler().post(() -> {
-                Intent intent = new Intent(MainActivity.getInstance(), Image_Showcase_Activity.class); // 跳转到Image_Showcase_Activity
-                intent.putStringArrayListExtra("imageURLs", (ArrayList<String>) pixivURLs); // 将图片URL传递给Image_Showcase_Activity
-                startActivity(intent);
-            });
+            try {
+                new Handler().post(() -> {
+                    Intent intent = new Intent(MainActivity.getInstance(), ImageShowcaseActivity.class); // 跳转到Image_Showcase_Activity
+                    intent.putStringArrayListExtra("imageURLs", (ArrayList<String>) pixivURLs); // 将图片URL传递给Image_Showcase_Activity
+                    startActivity(intent);
+                    pixivURLs.clear();
+                });
+            } catch (Exception e) {
+                ExceptionHandler.handleException(e);
+            }
+
         }
     }
 

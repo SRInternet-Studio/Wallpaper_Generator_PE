@@ -24,8 +24,9 @@ public class PixivLabelSelection extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.pixiv_label_selection, container, false); // 加载布局
         TextInputEditText editTextLabel = view.findViewById(R.id.editTextLabel); // 获取输入框
-        ChipGroup chipGroupLabels = view.findViewById(R.id.chipGroupLabels); // 获取 ChipGroup
-        Button returnButton = view.findViewById(R.id.pixiv_Label_Return_Button); // 获取返回按钮
+        ChipGroup chipGroupLabels = view.findViewById(R.id.chip_group_labels); // 获取 ChipGroup
+        Button returnButton = view.findViewById(R.id.pixiv_label_return_button); // 获取返回按钮
+        Button addLabelButton = view.findViewById(R.id.tag_button); // 获取添加按钮
 
         editTextLabel.addTextChangedListener(new TextWatcher() {
             @Override
@@ -46,6 +47,14 @@ public class PixivLabelSelection extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {}
+        });
+
+        addLabelButton.setOnClickListener(v -> {
+            String tag = Objects.requireNonNull(editTextLabel.getText()).toString(); // 获取输入框内容
+            if (!tag.isEmpty()) {
+                addChipToGroup(tag, chipGroupLabels); // 添加到 ChipGroup
+                editTextLabel.setText(""); // 清空输入框
+            }
         });
 
         returnButton.setOnClickListener(v -> {

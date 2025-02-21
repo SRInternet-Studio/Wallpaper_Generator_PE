@@ -13,17 +13,20 @@ import top.srintelligence.wallpaper_generator.R;
 
 public class GenerateFragment extends Fragment {
 
-    private View _view;
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        _view = inflater.inflate(R.layout.fragment_generate, container, false);
+        view = inflater.inflate(R.layout.fragment_generate, container, false);
 
-        Button generateFromPixivButton = _view.findViewById(R.id.generate_from_pixiv_button);
+        Button generateFromPixivButton = view.findViewById(R.id.generate_from_pixiv_button);
         generateFromPixivButton.setOnClickListener(this::onGenerateFromPixivButtonClick);
 
-        return _view;
+        Button generateFromACGButton = view.findViewById(R.id.generate_from_acg_button);
+        generateFromACGButton.setOnClickListener(this::onGenerateFromACGButtonClick);
+
+        return view;
     }
 
     public void onGenerateFromPixivButtonClick(View v) {
@@ -33,9 +36,16 @@ public class GenerateFragment extends Fragment {
         transaction.commit();
     }
 
+    public void onGenerateFromACGButtonClick(View v) {
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, new ACGGenerateFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        _view = null;
+        view = null;
     }
 }

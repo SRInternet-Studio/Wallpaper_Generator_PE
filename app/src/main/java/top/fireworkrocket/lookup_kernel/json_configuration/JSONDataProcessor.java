@@ -1,6 +1,9 @@
+// Java
 package top.fireworkrocket.lookup_kernel.json_configuration;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import top.fireworkrocket.lookup_kernel.exception.ExceptionHandler;
 
 import java.io.BufferedReader;
@@ -19,8 +22,8 @@ public class JSONDataProcessor {
     private final Gson gson = new Gson();
     private final int bufferSize = json_Buffer_Size;
 
-    private Class<?> structure; // JSON 数据结构，这是Gson解析JSON必要条件
-    private Object parser; // 解析器，在这里处理完成后返回给调用者
+    private Class<?> structure;
+    private Object parser;
 
     public JSONDataProcessor build() {
         return this;
@@ -49,11 +52,19 @@ public class JSONDataProcessor {
             }
         }
 
-        if (parser != null) {
-            parser = gson.fromJson(json.toString(), structure);
+        JsonElement element = gson.fromJson(json.toString(), JsonElement.class);
+        if (element == null || !element.isJsonObject()) {
+            ExceptionHandler.handleException(new IllegalStateException("Expected JSON object but got: " + element));
         } else {
-            ExceptionHandler.handleException(new Throwable("Parser is null"));
+            JsonObject jsonObj = element.getAsJsonObject();
+            if (parser != null) {
+                parser = gson.fromJson(jsonObj, structure);
+            } else {
+                ExceptionHandler.handleException(new Throwable("Parser is null"));
+            }
         }
+
+        connection.disconnect();
         return this;
     }
 

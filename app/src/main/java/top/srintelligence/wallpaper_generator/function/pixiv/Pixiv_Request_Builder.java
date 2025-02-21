@@ -1,9 +1,9 @@
-package top.fireworkrocket.lookup_kernel.process.pixiv;
+package top.srintelligence.wallpaper_generator.function.pixiv;
 
 import top.fireworkrocket.lookup_kernel.exception.ExceptionHandler;
 import top.fireworkrocket.lookup_kernel.process.json.image.common.Return;
 import top.fireworkrocket.lookup_kernel.process.net.util.URLUtil;
-import top.fireworkrocket.lookup_kernel.config.api.Default_Pixiv_API_Config;
+import top.srintelligence.wallpaper_generator.api.pixiv.Default_Pixiv_API_Config;
 
 import java.io.IOException;
 import java.util.*;
@@ -26,7 +26,7 @@ public class Pixiv_Request_Builder {
     int width; // 宽度
     int height; // 高度
 
-    public List<String> build() {
+    public List<String> build() throws IOException {
         if (api == null) {
             api = Default_Pixiv_API_Config.LOLICON;
         }
@@ -55,17 +55,14 @@ public class Pixiv_Request_Builder {
 
         HashMap<String, Object> jsonData;
         Set<String> blockedTags;
-        try {
-            jsonData = Return.getReturn(apiURL);
-            for (Map.Entry<String, Object> entry : jsonData.entrySet()) {
-                ExceptionHandler.handleDebug("------------------------------------------------");
-                ExceptionHandler.handleDebug(entry.getKey() + "：" + entry.getValue()+"\n");
-            }
-            //blockedTags = top.fireworkrocket.lookup_kernel.process.json.image.pixiv.blocked_tags.Return.getReturn("");
-            jsonData.get("data");
-        } catch (IOException e){
-            throw new RuntimeException(e);
+
+        jsonData = Return.getReturn(apiURL);
+        for (Map.Entry<String, Object> entry : jsonData.entrySet()) {
+            ExceptionHandler.handleDebug("------------------------------------------------");
+            ExceptionHandler.handleDebug(entry.getKey() + "：" + entry.getValue()+"\n");
         }
+        //blockedTags = top.fireworkrocket.lookup_kernel.process.json.image.pixiv.blocked_tags.Return.getReturn("");
+        jsonData.get("data");
 
         // 抽取图片URL
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) jsonData.get("data");

@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">壁纸生成器</string>
     <string name="welcome_text"><b><big><big><big>Wallpaper Generator</big></big></big></b> \n&#8201;<big><small>For Android</small></big></string>
+
+    <string-array name="acg_generate_types">
+        <item>随机</item>
+        <item>兽耳</item>
+        <item>银发</item>
+        <item>星空</item>
+    </string-array>
 </resources>

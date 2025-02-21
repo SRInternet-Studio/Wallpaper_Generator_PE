@@ -1,4 +1,4 @@
-package top.fireworkrocket.lookup_kernel.process.json.image.pixiv.blocked_tags;
+package top.srintelligence.wallpaper_generator.function.pixiv.json.blocked_tags;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

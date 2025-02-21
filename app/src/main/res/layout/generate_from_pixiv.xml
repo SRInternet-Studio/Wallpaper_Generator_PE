@@ -74,7 +74,7 @@
                         android:id="@+id/pixiv_Tag_Text_View"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="显示内容"
+                        android:text="没有内容"
                         android:textSize="14sp"
                         android:textColor="@color/text_colors"
                         android:layout_marginBottom="8dp"/>

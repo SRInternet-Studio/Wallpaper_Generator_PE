@@ -13,7 +13,7 @@ import static top.fireworkrocket.lookup_kernel.process.net.util.URLUtil.addURLPa
 import static top.fireworkrocket.lookup_kernel.process.net.util.URLUtil.parseURLParams;
 
 /**
- * API 参数处理器，此类用于编辑、删除和添加 URL 参数。
+ * 这里是 API 参数处理器，此类用于编辑、删除和添加 URL 参数。
  *
  * <p>示例用法：</p>
  * <pre>{@code
@@ -84,25 +84,52 @@ public class ApiParamHandler {
      * @param apiUrl 要添加参数的 URL
      * @param apiObservableList 可观察的 URL 列表
      * @return 添加参数后的新 URL
-     * @throws Exception 如果参数格式错误或参数已存在
+     * @throws IllegalArgumentException 如果参数格式错误或参数为空
+     * @throws IllegalStateException 如果参数已存在
      */
-    public static String addParam(String newParam, String apiUrl, List<String> apiObservableList) throws Exception {
-        String[] keyValue = newParam.split("=");
-        if (keyValue.length == 2) {
-            String key = keyValue[0];
-            String value = keyValue[1];
-            Map<String, String> params = parseURLParams(apiUrl);
-            if (!params.containsKey(key)) {
-                String newUrl = addURLParam(apiUrl, key, value);
-                apiObservableList.remove(apiUrl);
-                apiObservableList.add(newUrl);
-                databaseUtil.replaceItem(apiUrl, newUrl);
-                return newUrl;
-            } else {
-                throw new Exception("参数已存在");
-            }
-        } else {
-            throw new Exception("参数格式错误");
+    public static String addParam(String newParam, String apiUrl, List<String> apiObservableList) {
+        if (newParam == null || apiUrl == null) {
+            throw new IllegalArgumentException("参数不能为空");
         }
+
+        String[] keyValue = newParam.split("=");
+        if (keyValue.length != 2 || keyValue[0].isEmpty()) {
+            throw new IllegalArgumentException("参数格式错误");
+        }
+
+        Map<String, String> params = parseURLParams(apiUrl);
+        if (params.containsKey(keyValue[0])) {
+            throw new IllegalStateException("参数已存在");
+        }
+
+        String newUrl = addURLParam(apiUrl, keyValue[0], keyValue[1]);
+        apiObservableList.remove(apiUrl);
+        apiObservableList.add(newUrl);
+        databaseUtil.replaceItem(apiUrl, newUrl);
+        return newUrl;
     }
+
+    /**
+     * 批量添加参数到指定 URL（不更新观察列表）
+     *
+     * @param params 要添加的参数 Map
+     * @param apiUrl 目标 URL
+     * @return 处理后的 URL
+     * @throws IllegalArgumentException 参数无效时抛出
+     */
+    public static String addParamsWithoutObservable(Map<String, String> params, String apiUrl) {
+        if (params == null || apiUrl == null) {
+            throw new IllegalArgumentException("参数不能为空");
+        }
+
+        String resultUrl = apiUrl;
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (entry.getKey() == null || entry.getValue() == null) {
+                throw new IllegalArgumentException("参数键值对不能为空");
+            }
+            resultUrl = addURLParam(resultUrl, entry.getKey(), entry.getValue());
+        }
+        return resultUrl;
+    }
+
 }

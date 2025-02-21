@@ -13,6 +13,7 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
 import android.widget.ImageView;
 import android.view.View;
+import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -23,9 +24,16 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.color.DynamicColors;
+import com.microsoft.clarity.Clarity;
+import com.microsoft.clarity.ClarityConfig;
+import com.microsoft.clarity.models.LogLevel;
 import top.fireworkrocket.lookup_kernel.config.DatabaseUtil;
+import top.fireworkrocket.lookup_kernel.exception.ExceptionHandler;
 import top.srintelligence.wallpaper_generator.uicontroller.*;
 import org.jetbrains.annotations.NotNull;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import static top.fireworkrocket.lookup_kernel.config.DefaultConfig.backGroundfile;
 import static top.fireworkrocket.lookup_kernel.config.DefaultConfig.debug;
@@ -36,9 +44,16 @@ public class MainActivity extends AppCompatActivity {
     public static final int NAV_GENERATE = R.id.nav_generate;
     public static final int NAV_WATHERFALL = R.id.nav_waterfall;
     public static final int NAV_SETTINGS = R.id.nav_settings;
+
+    private HomeFragment homeFragment;
+    private WaterfallFragment waterfallFragment;
+    private GenerateFragment generateFragment;
+    private SettingFragment settingFragment;
+
     private static MainActivity instance;
     private static DatabaseUtil databaseUtil;
     private boolean isChecked = debug;
+    TextView textViewLatency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", "Stopping FloatingViewService");
             stopFloatingViewService();
         }
+
+        ClarityConfig config = new ClarityConfig("pl4gsiexfb");
+        config.setLogLevel(LogLevel.Verbose);
+        Clarity.initialize(getApplicationContext(), config);
 
         Glide.with(this)
                 .load(imageUrl)
@@ -105,17 +124,31 @@ public class MainActivity extends AppCompatActivity {
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
 
             if (itemId == NAV_HOME && !(currentFragment instanceof HomeFragment)) {
-                selectedFragment = new HomeFragment();
+                if (homeFragment == null) {
+                    homeFragment = new HomeFragment();
+                }
+                selectedFragment = homeFragment;
             } else if (itemId == NAV_WATHERFALL && !(currentFragment instanceof WaterfallFragment)) {
-                selectedFragment = new WaterfallFragment();
+                if (waterfallFragment == null) {
+                    waterfallFragment = new WaterfallFragment();
+                }
+                selectedFragment = waterfallFragment;
             } else if (itemId == NAV_GENERATE && !(currentFragment instanceof GenerateFragment)) {
-                selectedFragment = new GenerateFragment();
+                if (generateFragment == null) {
+                    generateFragment = new GenerateFragment();
+                }
+                selectedFragment = generateFragment;
             } else if (itemId == NAV_SETTINGS && !(currentFragment instanceof SettingFragment)) {
-                selectedFragment = new SettingFragment();
+                if (settingFragment == null) {
+                    settingFragment = new SettingFragment();
+                }
+                selectedFragment = settingFragment;
             }
 
             if (selectedFragment != null) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, selectedFragment).commit();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, selectedFragment)
+                        .commit();
             }
             return true;
         });

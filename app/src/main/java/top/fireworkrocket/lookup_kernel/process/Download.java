@@ -1,12 +1,16 @@
 package top.fireworkrocket.lookup_kernel.process;
 
 import org.apache.commons.lang3.StringUtils;
+import top.fireworkrocket.lookup_kernel.exception.ExceptionHandler;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -15,14 +19,19 @@ import static top.fireworkrocket.lookup_kernel.exception.ExceptionHandler.*;
 
 
 /**
- * 文件下载类，支持多线程下载和断点续传。
+ * 文件下载工具类。
  *
- * <p>示例用法：</p>
+ * <p>支持多线程下载与断点续传，并在出现异常时自动重试以确保文件完整性。</p>
+ *
+ * <p>使用示例：</p>
  * <pre>{@code
- * String url = "http://example.com/file.zip";
- * String savePath = "/path/to/save";
- * String filePath = Download.downLoadByUrl(url, savePath, true);
- * System.out.println("文件下载路径: " + filePath);
+ * // 文件下载示例：
+ * String fileUrl = "http://example.com/file.zip";
+ * String saveDir = "/path/to/save";
+ *
+ * // downLoadByUrl 方法中第三个参数为 true 时返回下载后文件的绝对路径
+ * String downloadedFilePath = Download.downLoadByUrl(fileUrl, saveDir, true);
+ * System.out.println("下载文件路径: " + downloadedFilePath);
  * }</pre>
  */
 public class Download {
@@ -32,6 +41,7 @@ public class Download {
     private static final AtomicLong downloadedBytes = new AtomicLong(0);
     private static final AtomicLong startTime = new AtomicLong(0);
     private static volatile boolean isPaused = false;
+    private static volatile java.util.Map<String, String> customHeaders = new java.util.concurrent.ConcurrentHashMap<>();
 
     /**
      * 显示下载进度。
@@ -126,6 +136,7 @@ public class Download {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(5 * 1000);
         conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5410.0 Safari/537.36");
+        applyCustomHeaders(conn);
         int totalSize = conn.getContentLength();
         conn.disconnect();
         return totalSize;
@@ -159,6 +170,7 @@ public class Download {
             try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Range", "bytes=" + start + "-" + end);
+                applyCustomHeaders(conn);
                 conn.connect();
                 int responseCode = conn.getResponseCode();
 
@@ -248,6 +260,79 @@ public class Download {
         return null;
     }
 
+    public static String downLoadByUrlParallel(String urlStr, String savePath, boolean Return) {
+        String fileName = getFileName(urlStr);
+        String tmpFile = savePath + File.separator + fileName + ".tmp";
+        String finalFile = savePath + File.separator + fileName;
+        File file = null;
+
+        try {
+            handleDebug("Single-thread download from: " + urlStr);
+            String redirectedUrl = getRedirectedUrl(urlStr);
+            URL url = new URL(redirectedUrl);
+            int totalSize = getContentLength(url);
+
+            file = new File(tmpFile);
+            File parentDir = file.getParentFile();
+            if (!parentDir.exists()) {
+                parentDir.mkdirs();
+                handleDebug("Directory created: " + parentDir);
+            }
+
+            downloadedBytes.set(0);
+            startTime.set(System.currentTimeMillis());
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            applyCustomHeaders(conn);
+
+            try (RandomAccessFile raf = new RandomAccessFile(file, "rw");
+                 InputStream inputStream = conn.getInputStream()) {
+
+                byte[] buffer = new byte[4 * 1024];
+                int len;
+                while ((len = inputStream.read(buffer)) != -1) {
+                    raf.write(buffer, 0, len);
+                    downloadedBytes.addAndGet(len);
+                    showProgress(totalSize);
+                }
+            }
+
+            if (downloadedBytes.get() == totalSize) {
+                // 重命名文件
+                File target = new File(finalFile);
+                if (target.exists()) {
+                    target.delete();
+                }
+                if (file.renameTo(target)) {
+                    handleInfo("Download completed: " + finalFile);
+                    return Return ? finalFile : null;
+                } else {
+                    // 如果重命名失败，尝试复制文件
+                    try (FileInputStream fis = new FileInputStream(file);
+                         FileOutputStream fos = new FileOutputStream(target)) {
+                        byte[] buffer = new byte[8192];
+                        int length;
+                        while ((length = fis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, length);
+                        }
+                        handleInfo("File copied: " + finalFile);
+                        return Return ? finalFile : null;
+                    }
+                }
+            } else {
+                handleWarning("Download incomplete: " + downloadedBytes.get() + " / " + totalSize);
+            }
+
+        } catch (Exception e) {
+            handleException(e);
+        } finally {
+            if (file != null && file.exists() && !file.getAbsolutePath().equals(finalFile)) {
+                file.delete();
+            }
+        }
+        return null;
+    }
+
     /**
      * 暂停下载。
      */
@@ -262,4 +347,190 @@ public class Download {
         isPaused = false;
         Download.class.notifyAll();
     }
+
+    /**
+     * 设置自定义请求头。
+     *
+     * @param headers 请求头键值对
+     */
+    public static void setCustomHeaders(java.util.Map<String, String> headers) {
+        if (headers != null) {
+            customHeaders.clear();
+            customHeaders.putAll(headers);
+        }
+    }
+
+    /**
+     * 清除所有自定义请求头。
+     */
+    public static void clearCustomHeaders() {
+        customHeaders.clear();
+    }
+
+    /**
+     * 应用自定义请求头到连接。
+     *
+     * @param connection HTTP连接对象
+     */
+    private static void applyCustomHeaders(HttpURLConnection connection) {
+        // 设置默认User-Agent
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5410.0 Safari/537.36");
+
+        // 应用自定义请求头
+        for (Map.Entry<String, String> entry : customHeaders.entrySet()) {
+            connection.setRequestProperty(entry.getKey(), entry.getValue());
+        }
+    }
 }
+
+//    public static String downLoadByUrlParallel(String urlStr, String savePath, boolean Return) {
+//        String fileName = getFileName(urlStr);
+//        String multiThreadFile = savePath + File.separator + fileName + ".multi.tmp";
+//        String singleThreadFile = savePath + File.separator + fileName + ".single.tmp";
+//        String finalFile = savePath + File.separator + fileName;
+//
+//        ExecutorService executor = null;
+//        try {
+//            executor = Executors.newFixedThreadPool(2);
+//            CompletableFuture<String> multiFuture = CompletableFuture.supplyAsync(() -> {
+//                try {
+//                    return downLoadByUrlMulti(urlStr, multiThreadFile, true);
+//                } catch (Exception e) {
+//                    return null;
+//                }
+//            }, executor);
+//
+//            CompletableFuture<String> singleFuture = CompletableFuture.supplyAsync(() -> {
+//                try {
+//                    return downLoadByUrlSingle(urlStr, singleThreadFile, true);
+//                } catch (Exception e) {
+//                    return null;
+//                }
+//            }, executor);
+//
+//            CompletableFuture<String> result = CompletableFuture.anyOf(multiFuture, singleFuture)
+//                    .thenApply(path -> {
+//                        if (path == null) return null;
+//
+//                        String resultPath = (String) path;
+//                        File tmpFile = new File(resultPath);
+//                        File targetFile = new File(finalFile);
+//
+//                        // 如果是多线程下载成功，取消单线程下载
+//                        if (resultPath.equals(multiThreadFile)) {
+//                            singleFuture.cancel(true);
+//                            new File(singleThreadFile).delete();
+//                        } else {
+//                            multiFuture.cancel(true);
+//                            new File(multiThreadFile).delete();
+//                        }
+//
+//                        if (targetFile.exists()) targetFile.delete();
+//                        if (tmpFile.renameTo(targetFile)) {
+//                            return finalFile;
+//                        }
+//                        return null;
+//                    });
+//
+//            String finalPath = result.get(30, java.util.concurrent.TimeUnit.SECONDS);
+//            return Return ? finalPath : null;
+//
+//        } catch (Exception e) {
+//            handleException("Parallel download failed", e);
+//            return null;
+//        } finally {
+//            if (executor != null) {
+//                executor.shutdownNow();
+//            }
+//            // 清理临时文件
+//            new File(multiThreadFile).delete();
+//            new File(singleThreadFile).delete();
+//        }
+//    }
+//
+//    /**
+//     * 多线程下载方法。复制原有代码，但去掉自动重试单线程的逻辑，并在开始前重置计数变量。
+//     */
+//    private static String downLoadByUrlMulti(String urlStr, String filePath, boolean Return) {
+//        downloadedBytes.set(0);
+//        startTime.set(System.currentTimeMillis());
+//        ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
+//        AtomicInteger completedThreads = new AtomicInteger(0);
+//        AtomicBoolean retry = new AtomicBoolean(false);
+//
+//        try {
+//            handleDebug("Multi-thread download from: " + urlStr);
+//            String redirectedUrl = getRedirectedUrl(urlStr);
+//            URL url = new URL(redirectedUrl);
+//            int totalSize = getContentLength(url);
+//
+//            File file = new File(filePath);
+//            File parentDir = file.getParentFile();
+//            if (!parentDir.exists()) {
+//                parentDir.mkdirs();
+//                handleDebug("Directory created: " + parentDir);
+//            }
+//
+//            int partSize = totalSize / THREAD_COUNT;
+//            for (int i = 0; i < THREAD_COUNT; i++) {
+//                int start = i * partSize;
+//                int end = (i == THREAD_COUNT - 1) ? totalSize : (start + partSize - 1);
+//                executor.execute(new DownloadTask(url, file, start, end, completedThreads, THREAD_COUNT, retry));
+//            }
+//            executor.shutdown();
+//            while (!executor.isTerminated() && !Thread.currentThread().isInterrupted()) {
+//                showProgress(totalSize);
+//                Thread.sleep(1000);
+//            }
+//            if (downloadedBytes.get() == totalSize) {
+//                handleInfo("Multi-thread File Download Success: " + file.getAbsolutePath());
+//                if (Return) {
+//                    return file.getAbsolutePath();
+//                }
+//            } else {
+//                throw new RuntimeException("Multi-thread download failed, downloaded bytes: " + downloadedBytes.get());
+//            }
+//        } catch (Exception e) {
+//            handleException(e);
+//        }
+//        return null;
+//    }
+//
+//    /**
+//     * 单线程下载方法。直接调用单线程任务，前提是重置计数变量以确保独立运行。
+//     */
+//    private static String downLoadByUrlSingle(String urlStr, String filePath, boolean Return) {
+//        downloadedBytes.set(0);
+//        startTime.set(System.currentTimeMillis());
+//
+//        try {
+//            handleDebug("Single-thread download from: " + urlStr);
+//            String redirectedUrl = getRedirectedUrl(urlStr);
+//            URL url = new URL(redirectedUrl);
+//            int totalSize = getContentLength(url);
+//
+//            File file = new File(filePath);
+//            File parentDir = file.getParentFile();
+//            if (!parentDir.exists()) {
+//                parentDir.mkdirs();
+//                handleDebug("Directory created: " + parentDir);
+//            }
+//
+//            AtomicInteger completedThreads = new AtomicInteger(0);
+//            AtomicBoolean retry = new AtomicBoolean(false);
+//            new DownloadTask(url, file, 0, totalSize - 1, completedThreads, 1, retry).run();
+//
+//            if (downloadedBytes.get() == totalSize) {
+//                handleInfo("Single-thread File Download Success: " + file.getAbsolutePath());
+//                if (Return) {
+//                    return file.getAbsolutePath();
+//                }
+//            } else {
+//                ExceptionHandler.handleWarning("Single-thread download failed, downloaded bytes: " + downloadedBytes.get());
+//            }
+//        } catch (Exception e) {
+//            handleException(e);
+//            ExceptionHandler.handleWarning("Single-thread download failed" + e);
+//        }
+//        return null;
+//    }
