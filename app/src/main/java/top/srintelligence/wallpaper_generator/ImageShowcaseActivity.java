@@ -1,26 +1,35 @@
 package top.srintelligence.wallpaper_generator;
 
-import android.app.Notification;
+import android.app.WallpaperManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.jetbrains.annotations.NotNull;
 import top.fireworkrocket.lookup_kernel.exception.ExceptionHandler;
 import top.fireworkrocket.lookup_kernel.process.Download;
+import top.srintelligence.wallpaper_generator.function.WallpaperHelper;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,7 +84,7 @@ public class ImageShowcaseActivity extends AppCompatActivity {
 
                 @Override
                 public void onLongPress(MotionEvent e) {
-                    downloadCurrentImage();
+                    showOptionsDialog();
                 }
             });
 
@@ -84,7 +93,6 @@ public class ImageShowcaseActivity extends AppCompatActivity {
             this.finish();
             ExceptionHandler.handleException(e);
         }
-
     }
 
     @Override
@@ -99,10 +107,10 @@ public class ImageShowcaseActivity extends AppCompatActivity {
 
         Glide.with(this)
                 .load(imageURLs.get(currentIndex))
+                .centerInside() // 或使用 fitCenter()
                 .placeholder(R.drawable.loading_placeholder)
                 .error(R.drawable.error_placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-
                 .into(imageView);
     }
 
@@ -141,6 +149,27 @@ public class ImageShowcaseActivity extends AppCompatActivity {
                         .preload();
             }
         }
+
+    }
+
+    private void showOptionsDialog() {
+        if (currentIndex >= 0 && currentIndex < imageURLs.size()) {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            builder.setTitle("请选择操作")
+                    .setItems(new String[]{"设置为壁纸", "下载图片"}, (dialog, which) -> {
+                        switch (which) {
+                            case 0:
+                                new WallpaperHelper(this).showSetWallpaperDialog(imageURLs.get(currentIndex));
+                                break;
+                            case 1:
+                                downloadCurrentImage();
+                                break;
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .create()
+                    .show();
+        }
     }
 
     private void downloadCurrentImage() {
@@ -152,6 +181,7 @@ public class ImageShowcaseActivity extends AppCompatActivity {
             } else {
                 savePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
             }
+            Toast.makeText(this, "开始下载图片...", Toast.LENGTH_SHORT).show();
             new Thread(() -> {
                 if (currentImageUrl.contains("sinaimg.")) {
                     Map<String, String> headers = new HashMap<>();
@@ -161,7 +191,7 @@ public class ImageShowcaseActivity extends AppCompatActivity {
                 Download.downLoadByUrlParallel(currentImageUrl, savePath, false); // 其他域名正常下载
                 ExceptionHandler.handleDebug("Downloaded image: " + currentImageUrl + " to " + savePath);
                 Looper.prepare();
-                Toast.makeText(this, "Downloaded image to " + savePath, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "图片已保存至 " + savePath, Toast.LENGTH_SHORT).show();
                 Looper.loop();
                 Download.clearCustomHeaders();
             }).start();

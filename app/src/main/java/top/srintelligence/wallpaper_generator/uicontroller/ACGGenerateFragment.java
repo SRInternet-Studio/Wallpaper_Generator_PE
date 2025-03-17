@@ -35,6 +35,7 @@ public class ACGGenerateFragment extends Fragment {
     List<String> acgURLs = new ArrayList<>();
     String type;
     int limit = 1;
+    private NumberPicker numberPicker;
 
     @Nullable
     @Override
@@ -60,7 +61,7 @@ public class ACGGenerateFragment extends Fragment {
         // 将适配器设置到Spinner
         spinner.setAdapter(adapter);
 
-        NumberPicker numberPicker = view.findViewById(R.id.acg_input_number_picker); // 数量选择器
+        numberPicker = view.findViewById(R.id.acg_input_number_picker); // 数量选择器
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(30);
         numberPicker.setWrapSelectorWheel(true);
@@ -77,6 +78,9 @@ public class ACGGenerateFragment extends Fragment {
         generateButton.setOnClickListener(v -> {
             Spinner spinner = view.findViewById(R.id.acg_generate_type_spinner);
             type = spinner.getSelectedItem().toString();
+            // 从 NumberPicker 获取当前值
+            limit = numberPicker.getValue();
+            ExceptionHandler.handleDebug("选择的图片数量: " + limit);
             new GenerateACGTask().execute();
         });
     }
@@ -84,6 +88,12 @@ public class ACGGenerateFragment extends Fragment {
 
     private class GenerateACGTask extends AsyncTask<Void, Void, Void> { // 异步任务
         private AlertDialog progressDialog;
+        private final int requestLimit; // 保存请求时的 limit 值
+
+        public GenerateACGTask() {
+            // 在构造函数中保存当前的 limit 值
+            this.requestLimit = limit;
+        }
 
         @Override
         protected void onPreExecute() { // 加载框
@@ -115,7 +125,7 @@ public class ACGGenerateFragment extends Fragment {
 
             acgRequestBuilder
                     .setApi(DefaultACGAPIConfig.mirlKoiAPI)
-                    .setNum(limit);
+                    .setNum(requestLimit); // 使用保存的 limit 值
 
             acgURLs = acgRequestBuilder.build();
             return null;
@@ -131,14 +141,12 @@ public class ACGGenerateFragment extends Fragment {
                 new Handler().post(() -> {
                     Intent intent = new Intent(MainActivity.getInstance(), ImageShowcaseActivity.class);
                     intent.putStringArrayListExtra("imageURLs", (ArrayList<String>) acgURLs);
-                    ExceptionHandler.handleDebug("ACG URL: " + acgURLs);
                     startActivity(intent); // 启动Activity
                     acgURLs.clear();
                 });
             } catch (Exception e) {
                 ExceptionHandler.handleException(e);
             }
-
         }
     }
 }

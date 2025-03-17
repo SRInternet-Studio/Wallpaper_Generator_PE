@@ -1,5 +1,67 @@
+import java.util.*
+
 plugins {
     id("com.android.application")
+}
+
+
+tasks.register<Task>("generateRandomDictionary") {
+    doLast {
+        val outputFile = File(projectDir, "random.txt")
+        val random = Random()
+
+        val firstCharPool = ('a'..'z').toList() + ('A'..'Z').toList() + listOf('_', '$')
+
+        val safeConfusingChars = listOf(
+            'а', 'е', 'о', 'р', 'с', 'х', 'А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х',
+
+            'α', 'β', 'γ', 'δ', 'ε', 'η', 'θ', 'ι', 'κ', 'λ', 'μ', 'ν', 'ο', 'π', 'ρ', 'σ', 'τ', 'φ', 'χ', 'ψ', 'ω',
+            'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ', 'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ', 'Ο', 'Π', 'Ρ', 'Σ', 'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω',
+
+            'ℂ', 'ℕ', 'ℙ', 'ℚ', 'ℝ', 'ℤ',
+
+            'ｘ', 'ｙ', 'ｚ', 'ａ', 'ｂ', 'ｃ', 'ｄ', 'ｅ', 'ｆ', 'ｇ', 'ｈ', 'ｉ', 'ｊ', 'ｋ', 'ｌ', 'ｍ', 'ｎ', 'ｏ', 'ｐ', 'ｑ', 'ｒ', 'ｓ', 'ｔ', 'ｕ', 'ｖ', 'ｗ',
+            'Ａ', 'Ｂ', 'Ｃ', 'Ｄ', 'Ｅ', 'Ｆ', 'Ｇ', 'Ｈ', 'Ｉ', 'Ｊ', 'Ｋ', 'Ｌ', 'Ｍ', 'Ｎ', 'Ｏ', 'Ｐ', 'Ｑ', 'Ｒ', 'Ｓ', 'Ｔ', 'Ｕ', 'Ｖ', 'Ｗ', 'Ｘ', 'Ｙ', 'Ｚ',
+
+            'ā', 'ă', 'ą', 'ć', 'ĉ', 'ċ', 'č', 'ď', 'đ', 'ē', 'ĕ', 'ė', 'ę', 'ě', 'ĝ', 'ğ', 'ġ', 'ģ', 'ĥ', 'ħ', 'ĩ', 'ī', 'ĭ', 'į',
+            'Ā', 'Ă', 'Ą', 'Ć', 'Ĉ', 'Ċ', 'Č', 'Ď', 'Đ', 'Ē', 'Ĕ', 'Ė', 'Ę', 'Ě', 'Ĝ', 'Ğ', 'Ġ', 'Ģ', 'Ĥ', 'Ħ', 'Ĩ', 'Ī', 'Ĭ', 'Į'
+        )
+
+        val restCharsPool = firstCharPool + ('0'..'9').toList() + safeConfusingChars
+
+        outputFile.writer(Charsets.UTF_8).use { writer ->
+            repeat(2000) {
+                val firstChar = firstCharPool[random.nextInt(firstCharPool.size)]
+
+                val length = random.nextInt(8) + 3
+
+                val restChars = mutableListOf<Char>()
+                var hasSpecialChar = false
+
+                for (i in 1 until length) {
+                    if (!hasSpecialChar && i > length / 2 && random.nextBoolean()) {
+                        restChars.add(safeConfusingChars[random.nextInt(safeConfusingChars.size)])
+                        hasSpecialChar = true
+                    } else {
+                        restChars.add(restCharsPool[random.nextInt(restCharsPool.size)])
+                    }
+                }
+
+                if (!hasSpecialChar && length > 1) {
+                    val pos = random.nextInt(restChars.size)
+                    restChars[pos] = safeConfusingChars[random.nextInt(safeConfusingChars.size)]
+                }
+
+                writer.write("$firstChar${restChars.joinToString("")}\n")
+            }
+        }
+
+        println("Created random dictionary at ${outputFile.absolutePath}")
+    }
+}
+
+tasks.named("preBuild") {
+    dependsOn("generateRandomDictionary")
 }
 
 android {
@@ -10,7 +72,7 @@ android {
         minSdk = 23
         targetSdk = 35
         versionCode = 4
-        versionName = "4.0 Test 2025-1-7 T:V4"
+        versionName = "Release 2025.3.18"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         renderscriptTargetApi = 19
         renderscriptSupportModeEnabled = true
@@ -18,7 +80,14 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+
+        debug {
             isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
