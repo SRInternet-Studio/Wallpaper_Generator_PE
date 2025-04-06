@@ -15,17 +15,87 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHeight_percent="1.0"/>
 
-    <LinearLayout
-            android:orientation="vertical"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="30dp"
+        android:elevation="4dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/Indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center"
+            android:layout_marginLeft="52dp"
+            android:text="第 1/15 张"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/back_button"
+            style="@style/RoundedCorner"
+            android:layout_width="42dp"
+            android:layout_height="40dp"
+            android:layout_gravity="left|center"
+            android:layout_marginLeft="8dp"
+            android:src="@drawable/ic_action_return"
+            android:textColor="@color/text_colors"
+            app:backgroundTint="@color/overlay_color"
+            android:contentDescription="返回上一页"/>
+
+        <ProgressBar
+            android:id="@+id/Loading_progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.33"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_show_view"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="1.0">
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="0dp"
+            android:indeterminate="true" />
+
+        <ImageButton
+            android:id="@+id/up_button"
+            style="@style/RoundedCorner"
+            android:layout_width="42dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/ic_action_images_up"
+            android:textColor="@color/text_colors"
+            app:backgroundTint="@color/overlay_color"
+            android:contentDescription="上一张图片"/>
+
+        <ImageButton
+            android:id="@+id/down_button"
+            style="@style/RoundedCorner"
+            android:layout_width="42dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="58dp"
+            android:src="@drawable/ic_action_images_down"
+            android:textColor="@color/text_colors"
+            app:backgroundTint="@color/overlay_color"
+            android:contentDescription="下一张图片"/>
+
+        <ImageButton
+            android:id="@+id/more_button"
+            style="@style/RoundedCorner"
+            android:layout_width="42dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="102dp"
+            android:src="@drawable/ic_action_images_more"
+            android:textColor="@color/text_colors"
+            app:backgroundTint="@color/overlay_color"
+            android:contentDescription="更多功能"/>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

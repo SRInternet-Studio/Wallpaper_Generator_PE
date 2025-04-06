@@ -1,56 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
->
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
     <application
-            android:allowBackup="true"
-            android:fullBackupContent="@xml/backup_rules"
-            tools:targetApi="tiramisu"
-            android:dataExtractionRules="@xml/data_extraction_rules"
-            android:label="@string/app_name"
-            android:icon="@mipmap/ic_launcher"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
-            android:theme="@style/Theme.Wallpapergenerator"
-            android:enableOnBackInvokedCallback="true">
-
-        <activity android:name="top.srintelligence.wallpaper_generator.MainActivity"
-                  android:exported="true">
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Wallpapergenerator"
+        tools:targetApi="tiramisu">
+        <activity
+            android:name=".AboutPage"
+            android:exported="true"
+            android:label="@string/title_activity_about_page"
+            android:theme="@style/Theme.Wallpapergenerator">
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="壁纸生成器"
+            android:theme="@style/Theme.Wallpapergenerator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-                android:name=".ImageShowcaseActivity"
-                android:exported="false">
+            android:name=".ImageShowcaseActivity"
+            android:exported="false">
+
         </activity>
 
-        <service android:name=".uicontroller.FloatingViewService"
-                 android:permission="android.permission.SYSTEM_ALERT_WINDOW"
-                 android:exported="false"/>
+        <service
+            android:name=".uicontroller.FloatingViewService"
+            android:exported="false"
+            android:permission="android.permission.SYSTEM_ALERT_WINDOW" />
 
         <provider
-                android:name="androidx.core.content.FileProvider"
-                android:authorities="top.srintelligence.wallpaper_generator.fileprovider"
-                android:exported="false"
-                android:grantUriPermissions="true">
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="top.srintelligence.wallpaper_generator.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
-                    android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/file_paths" />
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.SET_WALLPAPER" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
 </manifest>
-

@@ -18,36 +18,6 @@
                 android:layout_marginBottom="8dp"
                 android:text="generate_from_pixiv_page_title"/>
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/toggle_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:singleSelection="true"
-                android:orientation="vertical"
-                style="@style/RoundedCorner">
-
-            <com.google.android.material.button.MaterialButton
-                    android:id="@+id/generate_from_pixiv_wide_screen_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="电脑壁纸"
-                    android:textColor="@color/text_colors"
-                    app:backgroundTint="@color/overlay_color"
-                    android:layout_marginBottom="2dp"
-                    style="@style/RoundedCorner"/>
-
-            <com.google.android.material.button.MaterialButton
-                    android:id="@+id/generate_from_pixiv_normal_screen_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="手机壁纸"
-                    android:textColor="@color/text_colors"
-                    app:backgroundTint="@color/overlay_color"
-                    android:layout_marginTop="2dp"
-                    style="@style/RoundedCorner"/>
-
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-
         <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

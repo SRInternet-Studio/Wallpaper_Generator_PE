@@ -59,7 +59,7 @@ public class PixivGenerateFragment extends Fragment {
 
         NumberPicker numberPicker = view.findViewById(R.id.pixiv_input_number_picker); // 数量选择器
         numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(30);
+        numberPicker.setMaxValue(20);
         numberPicker.setWrapSelectorWheel(true);
         numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> limit = newVal);
         return view;
@@ -69,7 +69,7 @@ public class PixivGenerateFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) { // 设置点击事件
         super.onActivityCreated(savedInstanceState);
 
-        Button addButton = Objects.requireNonNull(getView()).findViewById(R.id.add_tag_button); // 添加标签按钮
+        Button addButton = requireView().findViewById(R.id.add_tag_button); // 添加标签按钮
         Button generateButton = getView().findViewById(R.id.pixiv_generate_button); // 生成按钮
 
         CheckBox excludeAIBox = getView().findViewById(R.id.exclude_ai_checkbox); // 排除AI
@@ -100,6 +100,7 @@ public class PixivGenerateFragment extends Fragment {
                 pixivURLs = builder
                         .setTags(tags)
                         .setLimit(limit)
+                        .setProxy(MainActivity.getInstance().getString(R.string.proxy))
                         .excludeAI(excludeAI)
                         .build();
             } catch (IOException e) {

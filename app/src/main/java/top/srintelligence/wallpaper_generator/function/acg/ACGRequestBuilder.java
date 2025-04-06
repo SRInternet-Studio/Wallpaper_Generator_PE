@@ -31,7 +31,7 @@ public class ACGRequestBuilder {
         }
         ExceptionHandler.handleDebug("Request URL: " + url);
         ImageRequestProcessing.apiList = new String[]{url};
-        return ImageRequestProcessing.getPic(1);
+        return ImageRequestProcessing.getPic(num);
     }
 
     public ACGRequestBuilder setApi(DefaultACGAPIConfig api) {

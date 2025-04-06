@@ -11,6 +11,7 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.view.View;
 import android.widget.TextView;
@@ -28,12 +29,8 @@ import com.microsoft.clarity.Clarity;
 import com.microsoft.clarity.ClarityConfig;
 import com.microsoft.clarity.models.LogLevel;
 import top.fireworkrocket.lookup_kernel.config.DatabaseUtil;
-import top.fireworkrocket.lookup_kernel.exception.ExceptionHandler;
 import top.srintelligence.wallpaper_generator.uicontroller.*;
 import org.jetbrains.annotations.NotNull;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import static top.fireworkrocket.lookup_kernel.config.DefaultConfig.backGroundfile;
 import static top.fireworkrocket.lookup_kernel.config.DefaultConfig.debug;
@@ -160,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
 
         instance = this; // 保存当前实例
         databaseUtil = new DatabaseUtil(this); // 初始化数据库
+
+        // 还没加 Button checkingUpdate = findViewById(R.id.CheckingUpdate);
     }
 
     private Bitmap blur(Bitmap image) {

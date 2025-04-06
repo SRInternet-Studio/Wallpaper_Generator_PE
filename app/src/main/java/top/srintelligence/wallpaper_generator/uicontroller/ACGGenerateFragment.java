@@ -111,7 +111,7 @@ public class ACGGenerateFragment extends Fragment {
             ACGRequestBuilder acgRequestBuilder = new ACGRequestBuilder();
             if (type.equals("随机")) {
                 acgRequestBuilder
-                        .setSort(MirlKoiAPISort.TOP);
+                        .setSort(MirlKoiAPISort.RANDOM);
             } else if (type.equals("兽耳")) {
                 acgRequestBuilder
                         .setSort(MirlKoiAPISort.CATGIRL);
@@ -121,6 +121,18 @@ public class ACGGenerateFragment extends Fragment {
             } else if (type.equals("星空")) {
                 acgRequestBuilder
                         .setSort(MirlKoiAPISort.STARRYSKY);
+            } else if (type.equals("精选")) {
+                acgRequestBuilder
+                        .setSort(MirlKoiAPISort.TOP);
+            } else if (type.equals("无色图")) {
+                acgRequestBuilder
+                        .setSort(MirlKoiAPISort.PURE);
+            } else if (type.equals("横屏壁纸")) {
+                acgRequestBuilder
+                        .setSort(MirlKoiAPISort.PC);
+            } else if (type.equals("竖屏壁纸")) {
+                acgRequestBuilder
+                        .setSort(MirlKoiAPISort.PHONE);
             }
 
             acgRequestBuilder

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import top.srintelligence.wallpaper_generator.MainActivity;
 
+import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.io.IOException;
 import java.util.Objects;
@@ -26,13 +27,25 @@ public class ExceptionHandler {
         }
         EXCEPTIONS.offer(e);
         Log.e(TAG, logCaller() + " Exception: " + e.getClass().getName(), e);
-        showAlert("An error was encountered while processing the request", e.getMessage() + "\n" + Log.getStackTraceString(e));
+        showAlert(exceptionSourceAnalysis(e), "详细信息：\n" + e.getMessage() + "\n" + Log.getStackTraceString(e));
     }
 
     public static void handleException(String message, Throwable e) {
         Log.e(TAG, message + " Exception: " + e.getClass().getName(), e);
         logCaller();
-        showAlert("An error was encountered while processing the request", e.getMessage() + "\n" + Log.getStackTraceString(e));
+        showAlert(exceptionSourceAnalysis(e) + message, "详细信息：\n" + e.getMessage() + "\n" + Log.getStackTraceString(e));
+    }
+
+    private static String exceptionSourceAnalysis(Throwable e) {
+        String tip;
+        if (e instanceof IndexOutOfBoundsException) {
+            tip = "本次请求失败或没有任何与您给出条件相符的值返回，请重试或更换条件";
+        } else if (e instanceof UnknownHostException) {
+            tip = "你可能没有链接任何互联网";
+        } else {
+            tip = "发生意外错误";
+        }
+        return tip;
     }
 
     public static void showAlert(String title, String message) {

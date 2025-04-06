@@ -1,11 +1,38 @@
 <resources>
     <string name="app_name">壁纸生成器</string>
     <string name="welcome_text"><b><big><big><big>Wallpaper Generator</big></big></big></b> \n&#8201;<big><small>For Android</small></big></string>
+    <string name="git_point">https://github.com/SRInternet-Studio/Wallpaper_Generator_PE</string>
+    <string name="git_check_point">https://api.github.com/repos/SRInternet-Studio/Wallpaper_Generator_PE</string>
 
     <string-array name="acg_generate_types">
         <item>随机</item>
+        <item>精选</item>
         <item>兽耳</item>
         <item>银发</item>
         <item>星空</item>
+        <item>无色图</item>
+        <item>横屏壁纸</item>
+        <item>竖屏壁纸</item>
     </string-array>
+    <string name="title_activity_about_page">AboutPage</string>
+    <string name="version">版本 4.0.0 - Release</string>
+    <string name="VersionNumber">4.0.0</string>
+    <string name="statement">对于 思锐工作室《壁纸生成器》系列产品的用户须知和免责声明（以下简称《声明》），请所有用户在使用本产品前务必认真仔细阅读。使用本产品即代表您同意本《声明》。\n
+\n
+1. 知识产权声明\n
+本软件依赖于 Loliapi API、Miklroi API、Lolicon API 等其他免费接口，开源项目或免费许可使用模型，完全遵循其免费使用协议或开源协议。部分生成的图片来源于网络搜集，由其作者保留所有权利，本软件只负责展示和合法传播。如为AI生成的图片，其权利归属由生成该图片的模型提供商的相关规定决定。\n
+2. 商业用途限制\n
+所有本产品相关的内容及所生成的任何图片均不可以用于任何商业用途。用户在使用本产品期间，不得有违反本软件的开源协议及软件中所使用到的免费接口，开源项目或免费许可使用模型的开源协议和免费使用协议的行为，违者任何后果自负。如有图片作者认为本系列产品侵犯其正当权益，请与接口提供商和开源项目负责人联系和交涉，思锐工作室不对此承担责任。\n
+3. 内容来源及规范性\n
+本产品所生成的任何图片资源均来源于第三方接口、开源项目和图片生成模型，由其提供商通过搜集网络图片资源或生成图片并返回给本产品。若部分图片内容存在违规现象，可以联系我们进行相关功能的整改或者下线。思锐工作室不对生成的图片内容承担任何责任。\n
+4. 法律遵守\n
+所有用户须遵守以上须知并严格遵守中华人民共和国法律，不得利用本产品进行任何非法活动或侵犯他人权利的行为。\n
+5. 图片处理责任\n
+本产品仅供学习交流和娱乐使用，用户应当在生成和保存图片后于24小时内删除，且对保存的图片及其使用承担全部法律责任。\n
+6. 变更通知\n
+若本声明的内容有任何变更，恕我们不另行通知，请用户每次更新本产品后及时阅读本声明以获得最新信息。\n
+7. 投诉与反馈\n
+如用户认为其权益受到侵害，应及时与思锐工作室联系进行反馈，思锐工作室将尽快处理此类投诉。\n
+</string>
+
 </resources>

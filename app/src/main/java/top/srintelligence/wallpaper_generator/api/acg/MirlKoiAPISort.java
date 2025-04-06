@@ -4,7 +4,11 @@ public enum MirlKoiAPISort {
     TOP("top"),
     SILVERHAIR("yin"),
     CATGIRL("cat"),
-    STARRYSKY("xing");
+    STARRYSKY("xing"),
+    RANDOM("random"),
+    PURE("iw233"),
+    PHONE("mp"),
+    PC("pc");
 
     public final String SORT;
 

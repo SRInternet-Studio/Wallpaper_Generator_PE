@@ -62,6 +62,7 @@ public class Pixiv_Request_Builder {
             ExceptionHandler.handleDebug(entry.getKey() + "：" + entry.getValue()+"\n");
         }
         //blockedTags = top.fireworkrocket.lookup_kernel.process.json.image.pixiv.blocked_tags.Return.getReturn("");
+        //TODO 这边云屏蔽因为后端没跟上注释了
         jsonData.get("data");
 
         // 抽取图片URL
@@ -98,6 +99,7 @@ public class Pixiv_Request_Builder {
             throw new IllegalArgumentException("R18 Parameter must be 0, 1 or 2!");
         }
         this.r18 = 0;
+        //R18 始终会被覆盖为0（禁用）需要时直接注释这行
         return this;
     }
 
