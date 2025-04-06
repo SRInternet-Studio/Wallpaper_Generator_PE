@@ -10,6 +10,10 @@
   </tr>
 </table>
 
+> [!Important]
+>
+> 我们正在逐步从[旧存储库](https://github.com/SRInternet/Wallpaper-generator-for-Android/)转移资源和内容到本存储库，目前可能还存在一些信息遗漏和丢失的情况，请注意仔细辨别。
+---
 
 ## 功能亮点
 - 快速返回
