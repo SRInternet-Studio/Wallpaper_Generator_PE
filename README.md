@@ -12,7 +12,7 @@
 
 > [!Important]
 >
-> 我们正在逐步从[旧存储库](https://github.com/SRInternet/Wallpaper-generator-for-Android/)转移资源和内容到本存储库，目前可能还存在一些信息遗漏和丢失的情况，请注意仔细辨别。
+> 此仓库正在转移到[新存储库](https://github.com/SRInternet-Studio/Wallpaper-generator-Mobile/)，此仓库目前已暂停更新和维护，恢复更新和维护时间待定。
 ---
 
 ## 功能亮点
